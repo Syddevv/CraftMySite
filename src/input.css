@@ -1,3 +1,29 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-@source "../public";
+@source '../public';
+
+@theme {
+    /* Your Custom Brand Colors */
+    --color-brand-primary: #6c63ff;
+    --color-brand-secondary: #48b1f7;
+    --color-brand-dark: #22223b;
+
+    /* Custom Gradient Animation (Optional, allows 'animate-gradient') */
+    --animate-gradient: gradient 3s ease infinite;
+    @keyframes gradient {
+        0%,
+        100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+}
+
+/* Standard Base Styles */
+@layer base {
+    body {
+        @apply text-brand-dark m-0 bg-gray-50 p-0 font-sans antialiased;
+    }
+}
