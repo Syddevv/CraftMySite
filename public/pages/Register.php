@@ -1,3 +1,58 @@
+<?php
+session_start();
+
+// Include configuration to get database connection ($conn)
+require_once 'google-config.php';
+
+// If already logged in, go to dashboard
+if (isset($_SESSION['user_email'])) {
+    header('Location: dashboard.php');
+    exit();
+}
+
+$error = '';
+$success = '';
+
+// Handle Form Submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Combine First and Last Name
+    $fullName = trim($_POST['firstName'] . ' ' . $_POST['lastName']);
+    $name = $conn->real_escape_string($fullName);
+    $email = $conn->real_escape_string($_POST['email']);
+    $password = $_POST['password'];
+
+    // NOTE: In a real production app, ALWAYS hash passwords!
+    // $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    // For this tutorial, we are using plain text to match your previous login logic.
+
+    // 1. Check if email already exists
+    $check_query = "SELECT * FROM users WHERE email = '$email'";
+    $result = $conn->query($check_query);
+
+    if ($result->num_rows > 0) {
+        // Email is already in the database
+        $error =
+            "This email address is already registered. Please <a href='login.php' class='underline font-bold'>login</a> instead.";
+    } else {
+        // 2. Insert new user
+        // We leave google_id NULL since this is a standard registration
+        $insert_sql = "INSERT INTO users (name, email, password) VALUES ('$name', '$email', '$password')";
+
+        if ($conn->query($insert_sql) === true) {
+            // 3. Auto-login the user after registration
+            $_SESSION['user_email'] = $email;
+            $_SESSION['user_name'] = $name;
+            $_SESSION['role'] = 'user'; // Default role
+
+            header('Location: dashboard.php');
+            exit();
+        } else {
+            $error = 'Error creating account: ' . $conn->error;
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -5,30 +60,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - CraftMySite</title>
     <link rel="stylesheet" href="../assets/css/styles.css" />
-    <style>
-      #toast {
-        visibility: hidden;
-        min-width: 250px;
-        background-color: #22223b;
-        color: #fff;
-        text-align: center;
-        border-radius: 8px;
-        padding: 16px;
-        position: fixed;
-        z-index: 100;
-        right: 30px;
-        bottom: 30px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        opacity: 0;
-        transition: opacity 0.5s, bottom 0.5s;
-        border-left: 4px solid #48b1f7;
-      }
-      #toast.show {
-        visibility: visible;
-        opacity: 1;
-        bottom: 50px;
-      }
-    </style>
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
     
@@ -52,6 +83,13 @@
           <li><a href="../pages/Contact.php" class="hover:text-brand-primary transition">Contact</a></li>
         </ul>
 
+        <div class="hidden md:flex items-center gap-4">
+          <a href="login.php" class="text-gray-600 hover:text-brand-primary font-semibold transition">Login</a>
+          <a href="register.php" class="px-5 py-2.5 rounded-lg bg-brand-primary bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">
+            Get Started
+          </a>
+        </div>
+
         <button id="menuToggle" class="md:hidden p-2 text-gray-600 hover:text-brand-primary focus:outline-none">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -67,8 +105,8 @@
           <li><a href="../pages/Faq.php" class="block text-gray-600">FAQ</a></li>
           <li><a href="../pages/Contact.php" class="block text-gray-600">Contact</a></li>
           <div class="flex flex-col gap-3 mt-2 pt-4 border-t border-gray-100">
-            <a href="/login" class="text-center text-gray-600 py-2">Login</a>
-            <a href="/register" class="text-center py-3 bg-brand-primary text-white rounded-lg">Get Started</a>
+            <a href="login.php" class="text-center text-gray-600 py-2">Login</a>
+            <a href="register.php" class="text-center py-3 bg-brand-primary text-white rounded-lg">Get Started</a>
           </div>
         </ul>
       </nav>
@@ -77,9 +115,9 @@
     <main class="flex-grow flex items-center justify-center p-6">
       <div class="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
         
-        <!-- Left Side: Visual/Branding (Hidden on small screens) -->
+        <!-- Left Side: Visual/Branding -->
         <div class="hidden md:flex md:w-5/12 bg-brand-primary bg-gradient-to-br from-brand-primary to-brand-secondary p-12 text-white flex-col justify-between relative overflow-hidden">
-            <!-- Decorative Circles -->
+            <!-- Circles -->
             <div class="absolute top-0 left-0 w-64 h-64 bg-white opacity-10 rounded-full -mt-10 -ml-10 blur-2xl"></div>
             <div class="absolute bottom-0 right-0 w-48 h-48 bg-white opacity-10 rounded-full -mb-10 -mr-10 blur-xl"></div>
 
@@ -92,20 +130,6 @@
                     Join thousands of businesses that trust CraftMySite to build their online presence. Fast, secure, and beautiful.
                 </p>
             </div>
-
-            <div class="relative z-10 mt-12">
-                <div class="flex items-center gap-4 p-4 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
-                    <div class="flex -space-x-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-300 border-2 border-brand-primary"></div>
-                        <div class="w-8 h-8 rounded-full bg-gray-400 border-2 border-brand-primary"></div>
-                        <div class="w-8 h-8 rounded-full bg-gray-500 border-2 border-brand-primary"></div>
-                    </div>
-                    <div class="text-sm">
-                        <p class="font-bold">Trusted by 200+ companies</p>
-                        <div class="flex text-yellow-400 text-xs">★★★★★</div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Right Side: Registration Form -->
@@ -116,7 +140,14 @@
                     <p class="text-gray-500">Sign up to get started with CraftMySite</p>
                 </div>
 
-                <!-- Social Sign Up: FIXED (Changed from <button> to <a>) -->
+                <!-- PHP ERROR MESSAGE -->
+                <?php if ($error): ?>
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 text-sm" role="alert">
+                        <span class="block sm:inline"><?php echo $error; ?></span>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Social Sign Up -->
                 <a href="google-login.php" class="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors mb-6 text-gray-700 font-medium no-underline">
                     <svg class="w-5 h-5" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -136,26 +167,27 @@
                     </div>
                 </div>
 
-                <form id="registerForm" class="space-y-5">
+                <!-- Register Form (Updated with method="POST" and action="") -->
+                <form action="" method="POST" class="space-y-5">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                            <input type="text" id="firstName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all" placeholder="John">
+                            <input type="text" name="firstName" id="firstName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all" placeholder="John">
                         </div>
                         <div>
                             <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                            <input type="text" id="lastName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all" placeholder="Doe">
+                            <input type="text" name="lastName" id="lastName" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all" placeholder="Doe">
                         </div>
                     </div>
 
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                        <input type="email" id="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all" placeholder="john@example.com">
+                        <input type="email" name="email" id="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all" placeholder="john@example.com">
                     </div>
 
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input type="password" id="password" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all" placeholder="••••••••">
+                        <input type="password" name="password" id="password" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all" placeholder="••••••••">
                     </div>
 
                     <div class="flex items-start mt-4">
@@ -172,14 +204,13 @@
 
                 <p class="text-center mt-8 text-sm text-gray-500">
                     Already have an account? 
-                    <a href="Login.php" class="font-bold text-brand-primary hover:text-brand-secondary transition-colors">Log in</a>
+                    <a href="login.php" class="font-bold text-brand-primary hover:text-brand-secondary transition-colors">Log in</a>
                 </p>
             </div>
         </div>
       </div>
     </main>
 
-    <!-- FOOTER -->
     <footer class="bg-gray-900 text-gray-300 py-12 mt-auto">
       <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
         <div class="col-span-1 md:col-span-2">
@@ -211,12 +242,6 @@
         &copy; 2025 CraftMySite. All rights reserved.
       </div>
     </footer>
-
-    <!-- Toast Notification -->
-    <div id="toast">
-        <div class="font-bold text-lg mb-1">Account Created!</div>
-        <div class="text-sm text-gray-300">Welcome to CraftMySite. Redirecting...</div>
-    </div>
 
     <script src="../js/nav.js"></script>
   </body>
