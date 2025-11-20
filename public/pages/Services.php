@@ -49,7 +49,7 @@
         <ul class="flex flex-col p-4 gap-4 font-medium">
           <li><a href="../pages/Home.php" class="block text-gray-600">Home</a></li>
           <li><a href="../pages/About.php" class="block text-gray-600">About</a></li>
-          <li><a href="../pages/Services.php" class="block text-brand-secondary font-semibold">Services</a></li>
+          <li><a href="../pages/Services.php" class="block text-brand-primary font-semibold">Services</a></li>
           <li><a href="../pages/Faq.php" class="block text-gray-600">FAQ</a></li>
           <li><a href="../pages/Contact.php" class="block text-gray-600">Contact</a></li>
           <div class="flex flex-col gap-3 mt-2 pt-4 border-t border-gray-100">
