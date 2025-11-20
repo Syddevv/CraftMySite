@@ -74,10 +74,10 @@
                     Professional website creation services that help your business stand out online. Modern designs, lightning-fast performance.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <a href="/register" class="px-8 py-4 rounded-xl bg-linear-to-r from-brand-primary to-brand-secondary text-white font-bold shadow-lg hover:shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                    <a href="Register.php" class="px-8 py-4 rounded-xl bg-linear-to-r from-brand-primary to-brand-secondary text-white font-bold shadow-lg hover:shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-2">
                         Start Today <span>→</span>
                     </a>
-                    <a href="/services" class="px-8 py-4 rounded-xl border-2 border-brand-primary text-brand-primary font-bold hover:bg-gray-50 transition-colors">
+                    <a href="Services.php" class="px-8 py-4 rounded-xl border-2 border-brand-primary text-brand-primary font-bold hover:bg-gray-50 transition-colors">
                         View Services
                     </a>
                 </div>
