@@ -2,7 +2,10 @@
 // google-config.php
 require_once '../../vendor/autoload.php';
 
-session_start();
+// FIXED: Only start session if one isn't already active
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Init Google Client
 $client = new Google_Client();
