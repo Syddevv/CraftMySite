@@ -288,5 +288,6 @@
 
     <script src="../js/ai.js"></script>
     <script src="../js/nav.js"></script>
+    <script src="../js/faq.js"></script>
   </body>
 </html>
