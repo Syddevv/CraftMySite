@@ -28,7 +28,7 @@ if (isset($_GET['code'])) {
         $insert_query = "INSERT INTO users (name, email, google_id) VALUES ('$name', '$email', '$google_id')";
         if ($conn->query($insert_query) === true) {
             $_SESSION['user_email'] = $email;
-            header('Location: Home.php');
+            header('Location: Dashboard.php');
         } else {
             echo 'Error: ' . $conn->error;
         }
