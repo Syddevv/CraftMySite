@@ -1,10 +1,58 @@
 <?php
 session_start();
 
-// If user is already logged in, redirect to dashboard
+// Include configuration to get database connection ($conn)
+// Adjust the path if necessary, assuming this file is in public/pages/
+require_once 'google-config.php';
+
+$error = '';
+
+// 1. Check if user is already logged in
 if (isset($_SESSION['user_email'])) {
-    header('Location: dashboard.php');
+    if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+        header('Location: admin_dashboard.php');
+    } else {
+        header('Location: dashboard.php');
+    }
     exit();
+}
+
+// 2. Handle Login Form Submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Sanitize email input
+    $email = $conn->real_escape_string($_POST['email']);
+    $password = $_POST['password'];
+
+    // Check DB for user
+    $sql = "SELECT * FROM users WHERE email = '$email'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+
+        // Verify Password
+        // NOTE: In a production app, you should use: if (password_verify($password, $user['password']))
+        // For this setup, we are comparing plain text as per your previous register logic.
+        if ($password === $user['password']) {
+            // Set Session Variables
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_name'] = $user['name'];
+            $_SESSION['role'] = $user['role']; // <--- Critical for redirection logic
+
+            // 3. Redirect based on Role
+            if ($user['role'] === 'admin') {
+                header('Location: admin_dashboard.php');
+            } else {
+                header('Location: dashboard.php');
+            }
+            exit();
+        } else {
+            $error = 'Invalid password.';
+        }
+    } else {
+        $error = 'No account found with that email.';
+    }
 }
 ?>
 
@@ -63,9 +111,8 @@ if (isset($_SESSION['user_email'])) {
     <main class="flex-grow flex items-center justify-center p-6">
       <div class="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
         
-        <!-- Left Side: Visual/Branding (Hidden on small screens) -->
+        <!-- Left Side: Visual/Branding -->
         <div class="hidden md:flex md:w-5/12 bg-brand-primary bg-gradient-to-br from-brand-primary to-brand-secondary p-12 text-white flex-col justify-between relative overflow-hidden">
-            <!-- Decorative Circles -->
             <div class="absolute top-0 left-0 w-64 h-64 bg-white opacity-10 rounded-full -mt-10 -ml-10 blur-2xl"></div>
             <div class="absolute bottom-0 right-0 w-48 h-48 bg-white opacity-10 rounded-full -mb-10 -mr-10 blur-xl"></div>
 
@@ -92,8 +139,14 @@ if (isset($_SESSION['user_email'])) {
                     <p class="text-gray-500">Welcome back! Please enter your details.</p>
                 </div>
 
+                <!-- Error Message Display -->
+                <?php if ($error): ?>
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-sm" role="alert">
+                        <span class="block sm:inline"><?php echo $error; ?></span>
+                    </div>
+                <?php endif; ?>
+
                 <!-- Social Login Button (Google) -->
-                <!-- This reuses your existing google-login.php script -->
                 <a href="google-login.php" class="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors mb-6 text-gray-700 font-medium no-underline">
                     <svg class="w-5 h-5" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -114,6 +167,7 @@ if (isset($_SESSION['user_email'])) {
                 </div>
 
                 <!-- Standard Login Form -->
+                <!-- Action points to itself (empty string) to trigger PHP at top -->
                 <form action="" method="POST" class="space-y-5">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
@@ -141,8 +195,8 @@ if (isset($_SESSION['user_email'])) {
         </div>
       </div>
     </main>
-
-    <!-- FOOTER -->
+    
+        <!-- FOOTER -->
     <footer class="bg-gray-900 text-gray-300 py-12 mt-auto">
       <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
         <div class="col-span-1 md:col-span-2">
