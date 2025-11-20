@@ -30,13 +30,12 @@
           <li><a href="../pages/Contact.php" class="hover:text-brand-primary transition">Contact</a></li>
         </ul>
 
-        <div class="hidden md:flex items-center gap-4">
-          <a href="/login" class="text-gray-600 hover:text-brand-primary font-semibold transition">Login</a>
-          <!-- Added bg-brand-primary fallback and switched to bg-gradient-to-r -->
-          <a href="/register" class="px-5 py-2.5 rounded-lg bg-brand-primary bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">
-            Get Started
-          </a>
-        </div>
+           <div class="hidden md:flex items-center gap-4">
+                <a href="Login.php" class="text-gray-600 hover:text-brand-primary font-semibold transition">Login</a>
+                <a href="Register.php" class="px-5 py-2.5 rounded-lg bg-linear-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">
+                    Get Started
+                </a>
+            </div>
 
         <button id="menuToggle" class="md:hidden p-2 text-gray-600 hover:text-brand-primary focus:outline-none">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

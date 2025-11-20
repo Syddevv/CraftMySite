@@ -30,8 +30,8 @@
             </ul>
 
             <div class="hidden md:flex items-center gap-4">
-                <a href="/login" class="text-gray-600 hover:text-brand-primary font-semibold transition">Login</a>
-                <a href="/register" class="px-5 py-2.5 rounded-lg bg-linear-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">
+                <a href="Login.php" class="text-gray-600 hover:text-brand-primary font-semibold transition">Login</a>
+                <a href="Register.php" class="px-5 py-2.5 rounded-lg bg-linear-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">
                     Get Started
                 </a>
             </div>
