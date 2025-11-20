@@ -15,31 +15,6 @@ if (isset($_SESSION['user_email'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - CraftMySite</title>
     <link rel="stylesheet" href="../assets/css/styles.css" />
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                primary: '#6c63ff',   
-                secondary: '#48b1f7', 
-                dark: '#22223b',
-              }
-            },
-            backgroundImage: {
-              'gradient-primary': 'linear-gradient(to right, #6c63ff, #48b1f7)',
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      /* Polyfill for gradient classes */
-      .bg-linear-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
-      .bg-linear-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
-    </style>
   </head>
   <body class="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
     
@@ -62,14 +37,7 @@ if (isset($_SESSION['user_email'])) {
           <li><a href="../pages/Faq.php" class="hover:text-brand-primary transition">FAQ</a></li>
           <li><a href="../pages/Contact.php" class="hover:text-brand-primary transition">Contact</a></li>
         </ul>
-
-        <div class="hidden md:flex items-center gap-4">
-          <a href="login.php" class="text-brand-primary font-bold transition">Login</a>
-          <a href="register.php" class="px-5 py-2.5 rounded-lg bg-brand-primary bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">
-            Get Started
-          </a>
-        </div>
-
+        
         <button id="menuToggle" class="md:hidden p-2 text-gray-600 hover:text-brand-primary focus:outline-none">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -208,15 +176,5 @@ if (isset($_SESSION['user_email'])) {
     </footer>
 
     <script src="../js/nav.js"></script>
-    <script>
-        // Mobile menu logic
-        const btn = document.getElementById('menuToggle');
-        const nav = document.getElementById('mobileNav');
-        if(btn && nav) {
-            btn.addEventListener('click', () => {
-                nav.classList.toggle('hidden');
-            });
-        }
-    </script>
   </body>
 </html>
