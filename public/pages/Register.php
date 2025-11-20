@@ -5,38 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - CraftMySite</title>
     <link rel="stylesheet" href="../assets/css/styles.css" />
-    
-    <!-- 
-       PREVIEW CONFIGURATION:
-       Using Tailwind CDN for instant preview.
-       In production, you would use your existing 'styles.css' build process.
-    -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                primary: '#6c63ff',   /* Purple/Indigo */
-                secondary: '#48b1f7', /* Light Blue */
-                dark: '#22223b',
-              }
-            },
-            backgroundImage: {
-              'gradient-primary': 'linear-gradient(to right, #6c63ff, #48b1f7)',
-            }
-          }
-        }
-      }
-    </script>
     <style>
-      /* Polyfill for bg-linear-to classes used in v4 */
-      .bg-linear-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
-      .bg-linear-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
-      .bg-linear-to-b { background-image: linear-gradient(to bottom, var(--tw-gradient-stops)); }
-      
-      /* Simple Toast Animation */
       #toast {
         visibility: hidden;
         min-width: 250px;
@@ -82,13 +51,6 @@
           <li><a href="../pages/Faq.php" class="hover:text-brand-primary transition">FAQ</a></li>
           <li><a href="../pages/Contact.php" class="hover:text-brand-primary transition">Contact</a></li>
         </ul>
-
-        <div class="hidden md:flex items-center gap-4">
-          <a href="/login" class="text-gray-600 hover:text-brand-primary font-semibold transition">Login</a>
-          <a href="/register" class="px-5 py-2.5 rounded-lg bg-brand-primary bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">
-            Get Started
-          </a>
-        </div>
 
         <button id="menuToggle" class="md:hidden p-2 text-gray-600 hover:text-brand-primary focus:outline-none">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
