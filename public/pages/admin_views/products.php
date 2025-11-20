@@ -43,6 +43,7 @@ if ($result && $result->num_rows > 0) {
                 <th class="px-6 py-4 text-right">Actions</th>
             </tr>
         </thead>
+        
         <tbody class="divide-y divide-gray-100">
             <?php if (empty($admin_products)): ?>
                 <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No products found in database.</td></tr>

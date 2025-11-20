@@ -101,6 +101,7 @@
             </div>
         </div>
     </div>
+    
 <?php else: ?>
     <div class="text-center py-20">
         <h2 class="text-2xl font-bold text-gray-800">Product not found</h2>
