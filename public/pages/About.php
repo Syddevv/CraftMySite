@@ -4,27 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About - CraftMySite</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                primary: '#6c63ff',   /* Blue-500 */
-                secondary: '#48b1f7', /* Blue-600 */
-                dark: '#22223b',
-              }
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      .bg-linear-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
-      .bg-linear-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
-    </style>
-  </head>
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+  </head>  
+  
   <body class="bg-gray-50 text-gray-800 font-sans antialiased">
     
     <header class="bg-white shadow-sm sticky top-0 z-50">
