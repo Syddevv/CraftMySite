@@ -63,7 +63,7 @@
                 <div class="p-4 bg-blue-50 rounded-xl mb-6 flex items-start gap-3">
                     <svg class="w-6 h-6 text-brand-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div>
-                        <p class="font-bold text-brand-dark text-sm">Estimated Delivery</p>
+                        <p class="font-bold text-brand-dark text-sm">Estimated Production Time</p>
                         <p class="text-brand-primary text-sm"><?php echo $active_product[
                             'timeline'
                         ]; ?></p>

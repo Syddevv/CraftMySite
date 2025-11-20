@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+// 1. Load Database Configuration
+require_once 'google-config.php';
+
 // Check if user is logged in
 if (!isset($_SESSION['user_email'])) {
     header('Location: register.php');
@@ -10,50 +13,54 @@ if (!isset($_SESSION['user_email'])) {
 $user_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Client';
 $user_email = $_SESSION['user_email'];
 
-// --- MOCK DATA (Available to all views) ---
-// In a real app, you might move this to a separate 'data.php' file
-$marketplace_items = [
-    1 => [
-        'id' => 1,
-        'title' => 'Modern SaaS',
-        'price' => 49,
-        'image' =>
-            'https://via.placeholder.com/600x400/6c63ff/ffffff?text=SaaS+Main',
-        'gallery' => [
-            'https://via.placeholder.com/600x400/6c63ff/ffffff?text=SaaS+1',
-            'https://via.placeholder.com/600x400/6c63ff/ffffff?text=SaaS+2',
-        ],
-        'desc' => 'High-converting landing page for startups.',
-        'timeline' => '3-5 Days',
-        'features' => ['Responsive', 'Dark Mode'],
-        'customization_options' => [['name' => 'Logo', 'price' => 50]],
-    ],
-    2 => [
-        'id' => 2,
-        'title' => 'Portfolio Pro',
-        'price' => 29,
-        'image' =>
-            'https://via.placeholder.com/600x400/48b1f7/ffffff?text=Portfolio',
-        'gallery' => [],
-        'desc' => 'Showcase your work.',
-        'timeline' => '2-3 Days',
-        'features' => ['Gallery', 'Contact Form'],
-        'customization_options' => [['name' => 'Colors', 'price' => 20]],
-    ],
-    3 => [
-        'id' => 3,
-        'title' => 'E-Commerce Starter',
-        'price' => 59,
-        'image' =>
-            'https://via.placeholder.com/600x400/22223b/ffffff?text=Store',
-        'gallery' => [],
-        'desc' => 'Start selling online.',
-        'timeline' => '5-7 Days',
-        'features' => ['Cart', 'Search'],
-        'customization_options' => [['name' => 'Uploads', 'price' => 60]],
-    ],
-];
+// --- FETCH MARKETPLACE ITEMS FROM DATABASE ---
+$marketplace_items = [];
+// Ensure we select all columns, especially 'images' and 'timeline'
+$sql_products =
+    "SELECT * FROM products WHERE status = 'Active' ORDER BY created_at DESC";
+$result_products = $conn->query($sql_products);
 
+if ($result_products && $result_products->num_rows > 0) {
+    while ($row = $result_products->fetch_assoc()) {
+        // 1. DECODE IMAGES
+        // The database stores images as a JSON string: '["path/to/img1.jpg", "path/to/img2.jpg"]'
+        $gallery_images = json_decode($row['images'], true);
+
+        // Safety check: If json_decode fails or is empty, use a default
+        if (!is_array($gallery_images) || empty($gallery_images)) {
+            $gallery_images = ['../assets/images/products/default.jpg']; // Fallback
+        }
+
+        // 2. SET MAIN IMAGE (First one in the list)
+        $main_image = $gallery_images[0];
+
+        // 3. BUILD DATA ARRAY
+        $marketplace_items[$row['id']] = [
+            'id' => $row['id'],
+            'title' => $row['name'],
+            'price' => $row['price'],
+            'desc' => $row['description'],
+            'timeline' => $row['timeline'], // Fetched from DB
+            'image' => $main_image, // Main card image
+            'gallery' => $gallery_images, // Full gallery for product page
+
+            // Static defaults (Since these columns don't exist in your DB yet)
+            'features' => [
+                'Responsive Design',
+                'SEO Optimized',
+                'Fast Loading Speed',
+                'Clean Code Structure',
+            ],
+            'customization_options' => [
+                ['name' => 'Logo Design', 'price' => 50],
+                ['name' => 'Content Upload', 'price' => 30],
+                ['name' => 'Color Scheme Change', 'price' => 20],
+            ],
+        ];
+    }
+}
+
+// --- MOCK DATA FOR ORDERS & PROJECTS ---
 $my_orders = [
     [
         'id' => '#ORD-001',
@@ -95,23 +102,6 @@ $active_product = isset($marketplace_items[$product_id])
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - CraftMySite</title>
     <link rel="stylesheet" href="../assets/css/styles.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                primary: '#6c63ff',
-                secondary: '#48b1f7',
-                dark: '#22223b',
-                light: '#f3f4f6'
-              }
-            }
-          }
-        }
-      }
-    </script>
 </head>
 <body class="bg-gray-50 font-sans antialiased flex h-screen overflow-hidden">
 
@@ -157,7 +147,7 @@ $active_product = isset($marketplace_items[$product_id])
     <!-- MAIN CONTENT -->
     <div class="flex-1 flex flex-col h-full overflow-hidden relative">
         
-        <!-- Header (Generic for all views) -->
+        <!-- Header -->
         <header class="bg-white border-b border-gray-200 h-20 flex items-center justify-between px-8 flex-shrink-0">
             <button class="md:hidden text-gray-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
             <h2 class="text-2xl font-bold text-brand-dark capitalize hidden md:block">
@@ -189,14 +179,11 @@ $active_product = isset($marketplace_items[$product_id])
         <!-- DYNAMIC CONTENT -->
         <main class="flex-1 overflow-y-auto p-8">
             <?php
-            // Whitelist allowed views for security
             $allowed_views = ['marketplace', 'orders', 'projects', 'product'];
 
             if (in_array($view, $allowed_views)) {
-                // Include the specific file based on 'view' parameter
                 include "views/{$view}.php";
             } else {
-                // Default fallback
                 include 'views/marketplace.php';
             }
             ?>

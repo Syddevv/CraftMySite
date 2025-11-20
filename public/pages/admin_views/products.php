@@ -25,10 +25,10 @@ if ($result && $result->num_rows > 0) {
         <h1 class="text-2xl font-bold text-gray-800">Template Products</h1>
         <p class="text-gray-500">Manage the templates visible in the marketplace.</p>
     </div>
-    <button class="px-4 py-2 bg-brand-primary text-white font-bold rounded-lg shadow-lg hover:bg-blue-600 transition-all flex items-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        Add New Product
-    </button>
+   <a href="?view=add_product" class="px-4 py-2 bg-brand-primary text-white font-bold rounded-lg shadow-lg hover:bg-blue-600 transition-all flex items-center gap-2">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+    Add New Template
+   </a>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">

@@ -33,23 +33,6 @@ $stats = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - CraftMySite</title>
     <link rel="stylesheet" href="../assets/css/styles.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                primary: '#6c63ff',
-                secondary: '#48b1f7',
-                dark: '#22223b',
-                light: '#f3f4f6'
-              }
-            }
-          }
-        }
-      }
-    </script>
 </head>
 <body class="bg-gray-100 font-sans antialiased flex h-screen overflow-hidden">
 
@@ -122,7 +105,13 @@ $stats = [
         <!-- View Loader -->
         <main class="flex-1 overflow-y-auto p-8 bg-gray-100">
             <?php
-            $allowed_views = ['stats', 'products', 'orders', 'queries'];
+            $allowed_views = [
+                'stats',
+                'products',
+                'orders',
+                'queries',
+                'add_product',
+            ];
 
             if (in_array($view, $allowed_views)) {
                 include "admin_views/{$view}.php";
