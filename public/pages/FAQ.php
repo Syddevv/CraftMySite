@@ -240,11 +240,8 @@
             Can't find the answer you're looking for? Our team is here to help you with any questions about our services.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/Contact.php" class="px-8 py-3 bg-white text-brand-primary font-bold rounded-xl hover:bg-gray-100 transition-colors shadow-lg">
+            <a href="Contact.php" class="px-8 py-3 bg-white text-brand-primary font-bold rounded-xl hover:bg-gray-100 transition-colors shadow-lg">
               Contact Our Team
-            </a>
-            <a href="mailto:hello@craftmysite.com" class="px-8 py-3 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition-colors">
-              Send Email
             </a>
           </div>
         </div>
