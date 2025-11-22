@@ -63,7 +63,7 @@
                 <div class="p-4 bg-blue-50 rounded-xl mb-6 flex items-start gap-3">
                     <svg class="w-6 h-6 text-brand-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div>
-                        <p class="font-bold text-brand-dark text-sm">Estimated Production Time</p>
+                        <p class="font-bold text-brand-dark text-sm">Estimated Delivery</p>
                         <p class="text-brand-primary text-sm"><?php echo $active_product[
                             'timeline'
                         ]; ?></p>
@@ -71,7 +71,11 @@
                 </div>
 
                 <!-- Customization Form -->
-                <form>
+                <form action="checkout_page.php" method="GET">
+                    <input type="hidden" name="product_id" value="<?php echo $active_product[
+                        'id'
+                    ]; ?>">
+                    
                     <h4 class="font-bold text-gray-800 mb-3">Customize Your Order</h4>
                     <div class="space-y-3 mb-6">
                         <?php foreach (
@@ -80,7 +84,9 @@
                         ): ?>
                         <label class="flex items-center justify-between p-3 border border-gray-200 rounded-xl cursor-pointer hover:border-brand-primary transition-colors">
                             <div class="flex items-center">
-                                <input type="checkbox" class="w-5 h-5 text-brand-primary rounded focus:ring-brand-primary border-gray-300">
+                                <input type="checkbox" name="customizations[]" value="<?php echo $opt[
+                                    'name'
+                                ]; ?>" class="w-5 h-5 text-brand-primary rounded focus:ring-brand-primary border-gray-300">
                                 <span class="ml-3 text-gray-700 text-sm font-medium"><?php echo $opt[
                                     'name'
                                 ]; ?></span>
@@ -92,8 +98,8 @@
                         <?php endforeach; ?>
                     </div>
 
-                    <button type="button" class="w-full py-4 bg-brand-primary text-white font-bold rounded-xl shadow-lg shadow-brand-primary/30 hover:bg-brand-secondary transition-all transform hover:-translate-y-0.5">
-                        Add to Order
+                    <button type="submit" class="w-full py-4 bg-brand-primary text-white font-bold rounded-xl shadow-lg shadow-brand-primary/30 hover:bg-brand-secondary transition-all transform hover:-translate-y-0.5">
+                        Proceed to Checkout
                     </button>
                 </form>
                 
