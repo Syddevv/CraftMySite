@@ -111,6 +111,7 @@ $stats = [
                 'orders',
                 'queries',
                 'add_product',
+                'edit_product',
             ];
 
             if (in_array($view, $allowed_views)) {
