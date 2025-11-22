@@ -1,8 +1,6 @@
 <?php
 session_start();
 
-// Include configuration to get database connection ($conn)
-// Adjust the path if necessary, assuming this file is in public/pages/
 require_once 'google-config.php';
 
 $error = '';
@@ -177,7 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div>
                         <div class="flex justify-between items-center mb-1">
                             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                            <a href="#" class="text-sm text-brand-primary hover:underline font-medium">Forgot password?</a>
                         </div>
                         <input type="password" id="password" name="password" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 outline-none transition-all" placeholder="••••••••">
                     </div>
