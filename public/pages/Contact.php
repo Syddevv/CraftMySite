@@ -1,3 +1,72 @@
+<?php
+session_start();
+require_once 'google-config.php'; // Database Connection
+
+$message_sent = false;
+$error = '';
+
+// 1. INITIALIZE VARIABLES
+$user_name = '';
+$user_email = '';
+$user_id = 'NULL';
+$order_id = 'NULL';
+$subject_val = '';
+
+// 2. CHECK LOGIN STATUS (Pre-fill Name/Email)
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    $user_name = $_SESSION['user_name'];
+    $user_email = $_SESSION['user_email'];
+}
+
+// 3. CHECK FOR ORDER CONTEXT (Pre-fill Subject)
+if (isset($_GET['order_id'])) {
+    $ord_id_safe = (int) $_GET['order_id'];
+    $order_id = $ord_id_safe;
+
+    // Fetch Order Number
+    $sql_ord = "SELECT order_number FROM orders WHERE id = $ord_id_safe";
+    $res_ord = $conn->query($sql_ord);
+    if ($res_ord && $res_ord->num_rows > 0) {
+        $ord_data = $res_ord->fetch_assoc();
+        $subject_val = 'Support Request: Order #' . $ord_data['order_number'];
+    }
+}
+
+// 4. HANDLE FORM SUBMISSION
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $name = $conn->real_escape_string($_POST['name']);
+    $email = $conn->real_escape_string($_POST['email']);
+    $subject = $conn->real_escape_string($_POST['subject']);
+    $message = $conn->real_escape_string($_POST['message']);
+
+    // Capture IDs if they exist in hidden fields
+    $post_user_id =
+        !empty($_POST['user_id']) && $_POST['user_id'] !== 'NULL'
+            ? (int) $_POST['user_id']
+            : 'NULL';
+    $post_order_id =
+        !empty($_POST['order_id']) && $_POST['order_id'] !== 'NULL'
+            ? (int) $_POST['order_id']
+            : 'NULL';
+
+    $sql = "INSERT INTO queries (user_id, order_id, name, email, subject, message) 
+            VALUES ($post_user_id, $post_order_id, '$name', '$email', '$subject', '$message')";
+
+    if ($conn->query($sql) === true) {
+        $message_sent = true;
+        // Reset content if not logged in, otherwise keep name/email
+        if (!isset($_SESSION['user_id'])) {
+            $user_name = '';
+            $user_email = '';
+        }
+        $subject_val = ''; // Clear subject
+    } else {
+        $error = 'Error sending message: ' . $conn->error;
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,7 +75,6 @@
     <title>Contact - CraftMySite</title>
     <link rel="stylesheet" href="../assets/css/styles.css" />
     <style>
-      /* Simple Toast Animation */
       #toast {
         visibility: hidden;
         min-width: 250px;
@@ -50,16 +118,17 @@
           <li><a href="../pages/About.php" class="hover:text-brand-primary transition">About</a></li>
           <li><a href="../pages/Services.php" class="hover:text-brand-primary transition">Services</a></li>
           <li><a href="../pages/Faq.php" class="hover:text-brand-primary transition">FAQ</a></li>
-          <!-- Active State -->
           <li><a href="../pages/Contact.php" class="text-brand-primary font-semibold transition">Contact</a></li>
         </ul>
 
-         <div class="hidden md:flex items-center gap-4">
-                <a href="Login.php" class="text-gray-600 hover:text-brand-primary font-semibold transition">Login</a>
-                <a href="Register.php" class="px-5 py-2.5 rounded-lg bg-linear-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">
-                    Get Started
-                </a>
-            </div>
+        <div class="hidden md:flex items-center gap-4">
+            <?php if (isset($_SESSION['user_email'])): ?>
+                <a href="dashboard.php" class="px-5 py-2.5 rounded-lg bg-brand-primary text-white font-semibold shadow-md">Dashboard</a>
+            <?php else: ?>
+                <a href="login.php" class="text-gray-600 hover:text-brand-primary font-semibold transition">Login</a>
+                <a href="register.php" class="px-5 py-2.5 rounded-lg bg-linear-to-r from-brand-primary to-brand-secondary text-white font-semibold shadow-md hover:shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5">Get Started</a>
+            <?php endif; ?>
+        </div>
 
         <button id="menuToggle" class="md:hidden p-2 text-gray-600 hover:text-brand-primary focus:outline-none">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,8 +145,12 @@
           <li><a href="../pages/Faq.php" class="block text-gray-600">FAQ</a></li>
           <li><a href="../pages/Contact.php" class="block text-brand-primary font-semibold">Contact</a></li>
           <div class="flex flex-col gap-3 mt-2 pt-4 border-t border-gray-100">
-            <a href="/login" class="text-center text-gray-600 py-2">Login</a>
-            <a href="/register" class="text-center py-3 bg-brand-primary text-white rounded-lg">Get Started</a>
+             <?php if (isset($_SESSION['user_email'])): ?>
+                <a href="dashboard.php" class="text-center py-3 bg-brand-primary text-white rounded-lg">Dashboard</a>
+            <?php else: ?>
+                <a href="/login" class="text-center text-gray-600 py-2">Login</a>
+                <a href="/register" class="text-center py-3 bg-brand-primary text-white rounded-lg">Get Started</a>
+            <?php endif; ?>
           </div>
         </ul>
       </nav>
@@ -108,7 +181,26 @@
                 <p class="text-gray-500">Fill out the form below and we'll get back to you as soon as possible.</p>
               </div>
               <div class="p-6">
-                <form id="contactForm" class="space-y-6">
+                
+                <!-- PHP Alerts -->
+                <?php if ($message_sent): ?>
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 text-center">
+                        <strong class="font-bold">Message Sent!</strong>
+                        <span class="block sm:inline">Thank you. We will get back to you shortly.</span>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if ($error): ?>
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6">
+                        <?php echo $error; ?>
+                    </div>
+                <?php endif; ?>
+
+                <form action="" method="POST" class="space-y-6">
+                  <!-- Hidden Fields for IDs -->
+                  <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
+                  <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
+
                   <div>
                     <label for="name" class="block text-sm font-medium text-brand-dark mb-2">Full Name</label>
                     <input 
@@ -117,6 +209,7 @@
                       name="name" 
                       required 
                       placeholder="Your full name" 
+                      value="<?php echo htmlspecialchars($user_name); ?>"
                       class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow"
                     >
                   </div>
@@ -128,9 +221,25 @@
                       name="email" 
                       required 
                       placeholder="your.email@example.com" 
+                      value="<?php echo htmlspecialchars($user_email); ?>"
                       class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow"
                     >
                   </div>
+                  
+                  <!-- Added Subject Field -->
+                  <div>
+                    <label for="subject" class="block text-sm font-medium text-brand-dark mb-2">Subject</label>
+                    <input 
+                      type="text" 
+                      id="subject" 
+                      name="subject" 
+                      required 
+                      placeholder="What is this regarding?" 
+                      value="<?php echo htmlspecialchars($subject_val); ?>"
+                      class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow"
+                    >
+                  </div>
+
                   <div>
                     <label for="message" class="block text-sm font-medium text-brand-dark mb-2">Message</label>
                     <textarea 
@@ -166,7 +275,6 @@
                   <div class="flex items-start space-x-4">
                     <div class="flex-shrink-0">
                       <div class="w-12 h-12 bg-brand-primary bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center text-white">
-                        <!-- Mail Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                       </div>
                     </div>
@@ -183,7 +291,6 @@
                   <div class="flex items-start space-x-4">
                     <div class="flex-shrink-0">
                       <div class="w-12 h-12 bg-brand-primary bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center text-white">
-                        <!-- Phone Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                       </div>
                     </div>
@@ -200,7 +307,6 @@
                   <div class="flex items-start space-x-4">
                     <div class="flex-shrink-0">
                       <div class="w-12 h-12 bg-brand-primary bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center text-white">
-                        <!-- MapPin Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                       </div>
                     </div>
@@ -217,7 +323,6 @@
                   <div class="flex items-start space-x-4">
                     <div class="flex-shrink-0">
                       <div class="w-12 h-12 bg-brand-primary bg-gradient-to-r from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center text-white">
-                        <!-- Clock Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                       </div>
                     </div>
@@ -234,31 +339,14 @@
 
             <!-- Why Choose Us -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8 relative overflow-hidden">
-              <!-- Subtle background decoration -->
               <div class="absolute top-0 right-0 w-32 h-32 bg-brand-primary opacity-5 rounded-full -mr-16 -mt-16"></div>
-              
               <h3 class="text-xl font-bold text-brand-dark mb-4 relative z-10">Why Choose CraftMySite?</h3>
               <ul class="space-y-3 text-gray-500 relative z-10">
-                <li class="flex items-center">
-                  <div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>
-                  Free consultation and project planning
-                </li>
-                <li class="flex items-center">
-                  <div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>
-                  Transparent pricing with no hidden costs
-                </li>
-                <li class="flex items-center">
-                  <div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>
-                  Quick turnaround times
-                </li>
-                <li class="flex items-center">
-                  <div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>
-                  Ongoing support and maintenance
-                </li>
-                <li class="flex items-center">
-                  <div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>
-                  100% satisfaction guarantee
-                </li>
+                <li class="flex items-center"><div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>Free consultation and project planning</li>
+                <li class="flex items-center"><div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>Transparent pricing with no hidden costs</li>
+                <li class="flex items-center"><div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>Quick turnaround times</li>
+                <li class="flex items-center"><div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>Ongoing support and maintenance</li>
+                <li class="flex items-center"><div class="w-2 h-2 bg-brand-primary rounded-full mr-3"></div>100% satisfaction guarantee</li>
               </ul>
             </div>
 
@@ -319,13 +407,13 @@
       </div>
     </footer>
 
-    <!-- Toast Notification -->
+    <!-- Simple Toast (Purely for JS, PHP sets message via top block) -->
     <div id="toast">
         <div class="font-bold text-lg mb-1">Message Sent!</div>
         <div class="text-sm text-gray-300">Thank you for your message. We'll get back to you within 24 hours.</div>
     </div>
 
     <script src="../js/nav.js"></script>
-    <script src="../js/contact.js"></script>
+
   </body>
 </html>
