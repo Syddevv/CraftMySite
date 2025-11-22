@@ -1,4 +1,4 @@
-\<?php
+<?php
 // 1. Load Database Configuration FIRST
 // Since this file is in public/pages/, it can find google-config.php directly
 require_once 'google-config.php';
@@ -33,6 +33,23 @@ $stats = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - CraftMySite</title>
     <link rel="stylesheet" href="../assets/css/styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                primary: '#6c63ff',
+                secondary: '#48b1f7',
+                dark: '#22223b',
+                light: '#f3f4f6'
+              }
+            }
+          }
+        }
+      }
+    </script>
 </head>
 <body class="bg-gray-100 font-sans antialiased flex h-screen overflow-hidden">
 
@@ -87,8 +104,9 @@ $stats = [
         
         <!-- Admin Header -->
         <header class="bg-white border-b border-gray-200 h-20 flex items-center justify-between px-8 flex-shrink-0 z-10">
-            <h2 class="text-2xl font-bold text-gray-800 capitalize"><?php echo ucfirst(
-                $view,
+            <!-- UPDATED: Replaces underscore with space and capitalizes words -->
+            <h2 class="text-2xl font-bold text-gray-800 capitalize"><?php echo ucwords(
+                str_replace('_', ' ', $view),
             ); ?> Management</h2>
             
             <div class="flex items-center gap-4">
@@ -105,6 +123,7 @@ $stats = [
         <!-- View Loader -->
         <main class="flex-1 overflow-y-auto p-8 bg-gray-100">
             <?php
+            // UPDATE: Added 'order_details' to the allowed list
             $allowed_views = [
                 'stats',
                 'products',
@@ -112,6 +131,7 @@ $stats = [
                 'queries',
                 'add_product',
                 'edit_product',
+                'order_details',
             ];
 
             if (in_array($view, $allowed_views)) {
