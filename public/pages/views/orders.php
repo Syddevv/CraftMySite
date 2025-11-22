@@ -17,7 +17,14 @@
         <tbody class="divide-y divide-gray-100">
             <?php if (empty($my_orders)): ?>
                 <tr>
-                    <td colspan="5" class="px-6 py-8 text-center text-gray-500">No orders found.</td>
+                    <td colspan="5" class="px-6 py-12 text-center">
+                        <div class="flex flex-col items-center justify-center text-gray-400">
+                            <svg class="w-12 h-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <p class="text-lg font-medium text-gray-600">No orders yet</p>
+                            <p class="text-sm mb-4">You haven't purchased any templates.</p>
+                            <a href="?view=marketplace" class="px-4 py-2 bg-brand-primary text-white rounded-lg text-sm font-bold hover:bg-brand-secondary transition-colors">Browse Marketplace</a>
+                        </div>
+                    </td>
                 </tr>
             <?php else: ?>
                 <?php foreach ($my_orders as $order): ?>
@@ -42,7 +49,11 @@
                         </span>
                     </td>
                     <td class="px-6 py-4">
-                        <button class="text-sm text-gray-400 hover:text-brand-dark font-medium">View Details</button>
+                        <!-- SAFETY UPDATE: Added '?? 0' to check if db_id exists -->
+                        <a href="?view=order_details&id=<?php echo $order[
+                            'db_id'
+                        ] ??
+                            0; ?>" class="text-sm text-gray-400 hover:text-brand-dark font-medium underline decoration-transparent hover:decoration-brand-dark transition-all">View Details</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
