@@ -42,47 +42,45 @@ _Professional landing page showcasing services and value propositions._
 
 | Home Page | Why Choose Us |
 |:---:|:---:|
-| ![Home]() | ![Features](path/to/Screenshot%202025-11-22%20135851.jpg) |
+
+<img width="1905" height="954" alt="Screenshot 2025-11-22 135839" src="https://github.com/user-attachments/assets/d218f27e-aef1-4c4a-9824-a380e3e423cf" />
 
 ### 👤 User Experience
 _Seamless dashboard for managing orders and getting support._
 
 | Client Dashboard | Order Details |
 |:---:|:---:|
-| ![Orders](<img width="1905" height="954" alt="Screenshot 2025-11-22 135839" src="https://github.com/user-attachments/assets/be4af475-c87a-40b6-a9a0-0440a95f2ef6" />) | ![Details](path/to/Screenshot%202025-11-22%20140354.png) |
+
+<img width="1913" height="956" alt="Screenshot 2025-11-22 140339" src="https://github.com/user-attachments/assets/76d828a4-d2a4-4a7c-a28a-be8c0c07d8c5" />
+<img width="1911" height="949" alt="Screenshot 2025-11-22 140354" src="https://github.com/user-attachments/assets/8fff54dd-4ffe-4f7f-ac8a-08d2d569ee18" />
 
 ### ⚙️ Admin Panel
 _Powerful tools for managing the marketplace inventory._
 
 | Product List | Add Product |
 |:---:|:---:|
-| ![Admin List](path/to/Screenshot%202025-11-22%20140608.png) | ![Add Item](path/to/Screenshot%202025-11-22%20140622.png) |
+
+<img width="1910" height="955" alt="Screenshot 2025-11-22 140559" src="https://github.com/user-attachments/assets/112b965a-3701-49d1-8d58-b79042590c26" />
+<img width="1913" height="953" alt="Screenshot 2025-11-22 140622" src="https://github.com/user-attachments/assets/5cab0bc7-10f0-4411-9539-7607331fab57" />
+<img width="1914" height="952" alt="Screenshot 2025-11-22 140631" src="https://github.com/user-attachments/assets/014f4859-e3f9-49f9-9b4e-45fb3e3e6607" />
+<img width="1912" height="953" alt="Screenshot 2025-11-22 140701" src="https://github.com/user-attachments/assets/f4b6176d-32fd-4503-bbd8-2db3f20525dc" />
 
 ### 📞 Support & FAQ
 _Integrated support system with AI capabilities._
 
 | AI FAQ Search | Ticket System |
 |:---:|:---:|
-| ![FAQ](path/to/Screenshot%202025-11-22%20140030.png) | ![Query](path/to/Screenshot%202025-11-22%20140405.png) |
+
+<img width="1548" height="954" alt="Screenshot 2025-11-22 140030" src="https://github.com/user-attachments/assets/41539e5d-9bb3-45e6-8b7d-4207398131c7" />
 
 ---
 
 ## 💻 Tech Stack
 
-* **Frontend:** React.js / HTML5
+* **Frontend:** HTML5
 * **Styling:** Tailwind CSS (Modern, responsive UI)
-* **Backend:** PHP / Node.js (Assumed based on context)
-* **Database:** SQL (MySQL/PostgreSQL)
-
----
-
-## 📬 Contact
-
-Ready to start your website project?
-
-* **Email:** hello@craftmysite.com
-* **Location:** Pulilan, Bulacan (Remote-first team)
-* **Response Time:** Within 24 Hours
+* **Backend:** PHP
+* **Database:** SQL
 
 ---
 
