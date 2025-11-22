@@ -83,7 +83,7 @@ if ($user_id > 0) {
             }
 
             $my_orders[] = [
-                'db_id' => $row['id'], // <--- THIS IS THE KEY YOU WERE MISSING
+                'db_id' => $row['id'],
                 'id' => $row['order_number'],
                 'template' => $row['product_name'],
                 'date' => date('M d, Y', strtotime($row['created_at'])),
@@ -94,15 +94,40 @@ if ($user_id > 0) {
     }
 }
 
-// --- 3. FETCH PROJECTS (Mock) ---
-$my_projects = [
-    [
-        'name' => 'My Personal Brand Site',
-        'template' => 'Portfolio Pro',
-        'url' => '#',
-        'completed_date' => 'Sep 15, 2025',
-    ],
-];
+// --- 3. FETCH PROJECTS (Completed Orders) ---
+$my_projects = [];
+if ($user_id > 0) {
+    // Fetch only COMPLETED orders
+    $sql_projects = "SELECT o.id, o.order_number, o.updated_at, p.name as product_name, p.images 
+                     FROM orders o
+                     JOIN products p ON o.product_id = p.id
+                     WHERE o.user_id = $user_id AND o.status = 'Completed'
+                     ORDER BY o.updated_at DESC";
+
+    $result_projects = $conn->query($sql_projects);
+
+    if ($result_projects && $result_projects->num_rows > 0) {
+        while ($row = $result_projects->fetch_assoc()) {
+            // Get Image
+            $imgs = json_decode($row['images'], true);
+            $thumb = !empty($imgs)
+                ? $imgs[0]
+                : 'https://via.placeholder.com/100';
+
+            $my_projects[] = [
+                'id' => $row['id'],
+                'name' => 'Project #' . $row['order_number'], // Or use a custom name if you add that field later
+                'template' => $row['product_name'],
+                'image' => $thumb,
+                'url' => '#', // Placeholder: In a real app, this would be the hosted link
+                'completed_date' => date(
+                    'M d, Y',
+                    strtotime($row['updated_at']),
+                ),
+            ];
+        }
+    }
+}
 
 // Determine current view
 $view = isset($_GET['view']) ? $_GET['view'] : 'marketplace';
