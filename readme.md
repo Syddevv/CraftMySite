@@ -42,14 +42,14 @@ _Professional landing page showcasing services and value propositions._
 
 | Home Page | Why Choose Us |
 |:---:|:---:|
-| ![Home](path/to/Screenshot%202025-11-22%20135839.jpg) | ![Features](path/to/Screenshot%202025-11-22%20135851.jpg) |
+| ![Home]() | ![Features](path/to/Screenshot%202025-11-22%20135851.jpg) |
 
 ### 👤 User Experience
 _Seamless dashboard for managing orders and getting support._
 
 | Client Dashboard | Order Details |
 |:---:|:---:|
-| ![Orders](path/to/Screenshot%202025-11-22%20140346.png) | ![Details](path/to/Screenshot%202025-11-22%20140354.png) |
+| ![Orders](<img width="1905" height="954" alt="Screenshot 2025-11-22 135839" src="https://github.com/user-attachments/assets/be4af475-c87a-40b6-a9a0-0440a95f2ef6" />) | ![Details](path/to/Screenshot%202025-11-22%20140354.png) |
 
 ### ⚙️ Admin Panel
 _Powerful tools for managing the marketplace inventory._
