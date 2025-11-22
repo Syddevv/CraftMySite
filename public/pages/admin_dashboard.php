@@ -1,9 +1,6 @@
 <?php
 // 1. Load Database Configuration FIRST
-// Since this file is in public/pages/, it can find google-config.php directly
 require_once 'google-config.php';
-
-// session_start() is handled in google-config.php, so we don't need it here again
 
 // --- SECURITY CHECK ---
 if (!isset($_SESSION['user_email'])) {
@@ -11,18 +8,43 @@ if (!isset($_SESSION['user_email'])) {
     exit();
 }
 
-// Mock Admin Data (You can pull this from DB later if needed)
+// Mock Admin Data
 $admin_name = isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Admin';
 
 // Determine current view
 $view = isset($_GET['view']) ? $_GET['view'] : 'stats';
 
-// --- MOCK DATA FOR STATS (Placeholder until you connect real orders) ---
+// --- FETCH REAL ADMIN STATS ---
+
+// 1. Total Revenue (Sum of Completed Orders)
+$sql_revenue =
+    "SELECT SUM(total_price) as total FROM orders WHERE status = 'Completed'";
+$res_revenue = $conn->query($sql_revenue);
+$revenue_raw = $res_revenue->fetch_assoc()['total'] ?? 0;
+
+// 2. Active Orders (Pending or In Progress)
+$sql_active_orders =
+    "SELECT COUNT(*) as count FROM orders WHERE status IN ('Pending', 'In Progress')";
+$res_active_orders = $conn->query($sql_active_orders);
+$active_orders_count = $res_active_orders->fetch_assoc()['count'];
+
+// 3. New Queries (Status = New)
+$sql_new_queries = "SELECT COUNT(*) as count FROM queries WHERE status = 'New'";
+$res_new_queries = $conn->query($sql_new_queries);
+$new_queries_count = $res_new_queries->fetch_assoc()['count'];
+
+// 4. Total Products (Active)
+$sql_products_count =
+    "SELECT COUNT(*) as count FROM products WHERE status = 'Active'";
+$res_products_count = $conn->query($sql_products_count);
+$total_products_count = $res_products_count->fetch_assoc()['count'];
+
+// Package into stats array
 $stats = [
-    'revenue' => '$12,450',
-    'active_orders' => 8,
-    'pending_queries' => 3,
-    'total_products' => 4,
+    'revenue' => '$' . number_format($revenue_raw, 2),
+    'active_orders' => $active_orders_count,
+    'pending_queries' => $new_queries_count,
+    'total_products' => $total_products_count,
 ];
 ?>
 
@@ -104,7 +126,6 @@ $stats = [
         
         <!-- Admin Header -->
         <header class="bg-white border-b border-gray-200 h-20 flex items-center justify-between px-8 flex-shrink-0 z-10">
-            <!-- UPDATED: Replaces underscore with space and capitalizes words -->
             <h2 class="text-2xl font-bold text-gray-800 capitalize"><?php echo ucwords(
                 str_replace('_', ' ', $view),
             ); ?> Management</h2>
@@ -123,7 +144,6 @@ $stats = [
         <!-- View Loader -->
         <main class="flex-1 overflow-y-auto p-8 bg-gray-100">
             <?php
-            // UPDATE: Added 'order_details' to the allowed list
             $allowed_views = [
                 'stats',
                 'products',
