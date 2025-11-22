@@ -20,11 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $conn->real_escape_string($fullName);
     $email = $conn->real_escape_string($_POST['email']);
     $password = $_POST['password'];
-
-    // NOTE: In a real production app, ALWAYS hash passwords!
-    // $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    // For this tutorial, we are using plain text to match your previous login logic.
-
     // 1. Check if email already exists
     $check_query = "SELECT * FROM users WHERE email = '$email'";
     $result = $conn->query($check_query);
