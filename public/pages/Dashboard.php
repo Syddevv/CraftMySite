@@ -119,23 +119,6 @@ $active_product = isset($marketplace_items[$product_id])
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - CraftMySite</title>
     <link rel="stylesheet" href="../assets/css/styles.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                primary: '#6c63ff',
-                secondary: '#48b1f7',
-                dark: '#22223b',
-                light: '#f3f4f6'
-              }
-            }
-          }
-        }
-      }
-    </script>
 </head>
 <body class="bg-gray-50 font-sans antialiased flex h-screen overflow-hidden">
 
@@ -223,6 +206,7 @@ $active_product = isset($marketplace_items[$product_id])
                 'projects',
                 'product',
                 'order_details',
+                'order_query',
             ];
 
             if (in_array($view, $allowed_views)) {
