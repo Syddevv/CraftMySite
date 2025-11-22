@@ -119,13 +119,16 @@
               The creative minds behind CraftMySite, dedicated to bringing your digital vision to life.
             </p>
           </div>
-
-          <!-- GRID LAYOUT FIX: Using grid-cols-2 for equal width and gap-8 for spacing -->
+          
           <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8 px-4">
   
-            <!-- CARD 1: w-full and h-full ensures it fills the grid cell -->
+             <!-- Sydney Santos -->
             <div class="w-full bg-white rounded-3xl p-8 text-center shadow-md border border-gray-100 hover:shadow-lg transition-all duration-300 flex flex-col items-center h-full">
-              <div class="text-9xl mb-8">👨‍💻</div>
+              <img 
+                src="../assets/images/syd.jpg" 
+                alt="Sydney Santos" 
+                class="w-60 h-60 rounded-full object-cover mb-8 shadow-lg border-4 border-white ring-2 ring-gray-100"
+              >
               <h3 class="text-2xl font-bold text-gray-900 mb-2">Sydney Santos</h3>
               <p class="text-brand-primary font-medium mb-6">3rd Year BSIS Student & Co-Founder</p>
               <p class="text-gray-500 leading-relaxed text-base px-2">
@@ -135,9 +138,14 @@
               </p>
             </div>
 
-            <!-- CARD 2: w-full and h-full ensures it fills the grid cell -->
+
+            <!-- James Camua -->
             <div class="w-full bg-white rounded-3xl p-8 text-center shadow-md border border-gray-100 hover:shadow-lg transition-all duration-300 flex flex-col items-center h-full">
-              <div class="text-9xl mb-8">👨‍💻</div> 
+              <img 
+                src="../assets/images/james.jpg" 
+                alt="James Camua" 
+                class="w-60 h-60 rounded-full object-cover mb-8 shadow-lg border-4 border-white ring-2 ring-gray-100"
+              >
               <h3 class="text-2xl font-bold text-gray-900 mb-2">James Camua</h3>
               <p class="text-brand-primary font-medium mb-6">3rd Year BSIS Student & Co-Founder</p>
               <p class="text-gray-500 leading-relaxed text-base px-2">
